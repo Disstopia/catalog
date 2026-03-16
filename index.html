@@ -709,13 +709,17 @@
   .modal-slider-track {
     display: flex;
     transition: transform 0.3s ease;
+    will-change: transform;
   }
   .modal-slider-track img {
     min-width: 100%;
+    width: 100%;
     max-height: 70vh;
     object-fit: contain;
     flex-shrink: 0;
+    flex-basis: 100%;
     background: #0a0a0a;
+    display: block;
   }
   .modal-slider-btn {
     position: absolute;
@@ -1400,7 +1404,9 @@ function openModal(id) {
 
 function mSlide(dir) {
   window._mCur = (window._mCur + dir + window._mLen) % window._mLen;
-  document.getElementById('mtrack').style.transform = `translateX(-${window._mCur * 100}%)`;
+  const track = document.getElementById('mtrack');
+  const w = track.parentElement.offsetWidth;
+  track.style.transform = `translateX(-${window._mCur * w}px)`;
   document.querySelectorAll('.modal-dot').forEach((d,i) => d.classList.toggle('active', i === window._mCur));
 }
 function mGo(n) { window._mCur = n; mSlide(0); }
