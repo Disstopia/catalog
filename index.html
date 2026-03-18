@@ -315,6 +315,63 @@
     letter-spacing: 0.1em;
   }
 
+  #pw-gate {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 1rem;
+  }
+  #pw-gate.hidden { display: none; }
+  .pw-card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    max-width: 340px;
+    width: 100%;
+    text-align: center;
+  }
+  .pw-icon { font-size: 2.5rem; margin-bottom: 1.25rem; display: block; }
+  .pw-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .pw-sub { font-size: 0.85rem; color: #888; margin-bottom: 1.5rem; line-height: 1.6; }
+  .pw-input {
+    width: 100%;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 10px;
+    color: #eee;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    outline: none;
+    margin-bottom: 0.75rem;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    text-align: center;
+    letter-spacing: 0.1em;
+  }
+  .pw-input:focus { border-color: #e05c97; }
+  .pw-btn {
+    width: 100%;
+    padding: 0.85rem;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #e05c97, #c04080);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .pw-btn:hover { opacity: 0.9; }
+  .pw-error { margin-top: 0.75rem; font-size: 0.8rem; color: #e05c97; min-height: 1.2em; }
+  .pw-hint { margin-top: 1.25rem; font-size: 0.75rem; color: #555; line-height: 1.6; }
   footer {
     border-top: 1px solid #2a1a2a;
     padding: 28px 24px;
@@ -1105,6 +1162,18 @@
   </div>
 </div><!-- /page-storage -->
 
+<div id="pw-gate">
+  <div class="pw-card">
+    <span class="pw-icon">🔒</span>
+    <p class="pw-title">Furtopian 카탈로그</p>
+    <p class="pw-sub">카카오 채널에서 안내받은<br>비밀번호를 입력해주세요.</p>
+    <input type="password" class="pw-input" id="pw-input" placeholder="비밀번호" maxlength="20">
+    <button class="pw-btn" onclick="checkPw()">입장하기</button>
+    <p class="pw-error" id="pw-error"></p>
+    <p class="pw-hint">비밀번호는 카카오 채널에서<br>확인하실 수 있습니다.</p>
+  </div>
+</div>
+
 <footer>
   <a href="https://pf.kakao.com/_vwxcxhX" class="footer-kakao" target="_blank">
     💬 카카오채널로 문의하기
@@ -1112,6 +1181,39 @@
   <div class="footer-note">가격은 디자인·옵션에 따라 다를 수 있습니다 · 주문제작 상담 환영</div>
 </footer>
 
+
+<script>
+(function() {
+  const KEY = 'furtopian_pw_ok';
+  const TTL = 7 * 24 * 60 * 60 * 1000;
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const { ts } = JSON.parse(raw);
+      if (Date.now() - ts < TTL) {
+        document.getElementById('pw-gate').classList.add('hidden');
+        return;
+      }
+    }
+  } catch(e) {}
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPw();
+  });
+  window.checkPw = function() {
+    const val = document.getElementById('pw-input').value.trim().toLowerCase();
+    const err = document.getElementById('pw-error');
+    if (!val) { err.textContent = '비밀번호를 입력해주세요.'; return; }
+    if (val === 'disfur') {
+      try { localStorage.setItem(KEY, JSON.stringify({ ts: Date.now() })); } catch(e) {}
+      document.getElementById('pw-gate').classList.add('hidden');
+    } else {
+      err.textContent = '비밀번호가 올바르지 않습니다.';
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').focus();
+    }
+  };
+})();
+</script>
 
 <script>
 const products = [

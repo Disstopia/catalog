@@ -1,0 +1,7 @@
+{
+  "routes": [
+    { "src": "/auth", "dest": "/auth.html" },
+    { "src": "/api/auth", "dest": "/api/auth.js" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
+}
