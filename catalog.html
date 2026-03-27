@@ -803,6 +803,145 @@
   }
   .modal-kakao:hover { opacity: 0.85; }
 
+  /* PARTNERS */
+  .partners-wrap {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+  }
+  .partners-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .partners-header-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.5em;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .partners-header-title {
+    font-family: 'Bebas Neue', 'Black Han Sans', sans-serif;
+    font-size: 2rem;
+    color: var(--text);
+    letter-spacing: 0.08em;
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+  .partners-header-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+  .partner-card {
+    background: var(--surface);
+    border: 1px solid #2a1a2a;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .partner-card:hover {
+    border-color: var(--accent2);
+    box-shadow: 0 8px 30px #a855f718;
+  }
+  .partner-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .partner-icon {
+    font-size: 2.2rem;
+    width: 56px;
+    height: 56px;
+    background: var(--surface2);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid #2a1a2a;
+  }
+  .partner-info { flex: 1; }
+  .partner-name {
+    font-family: 'Oswald', 'Black Han Sans', sans-serif;
+    font-size: 1.3rem;
+    color: var(--text);
+    letter-spacing: 0.08em;
+    font-weight: 700;
+  }
+  .partner-tagline {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    margin-top: 3px;
+  }
+  .partner-discount-badge {
+    background: linear-gradient(135deg, #ff2d9b, #cc44ff);
+    color: #fff;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 6px 14px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+  .partner-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+    margin-bottom: 18px;
+    word-break: keep-all;
+  }
+  .partner-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .partner-feature {
+    font-size: 0.78rem;
+    color: var(--accent3);
+    letter-spacing: 0.03em;
+    padding: 7px 10px;
+    background: #00e5ff0a;
+    border: 1px solid #00e5ff22;
+    border-radius: 8px;
+  }
+  .partner-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ff2d9b, #cc44ff);
+    color: #fff;
+    text-decoration: none;
+    padding: 13px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    letter-spacing: 0.04em;
+    transition: opacity 0.2s;
+    margin-bottom: 10px;
+  }
+  .partner-btn:hover { opacity: 0.85; }
+  .partner-note {
+    text-align: center;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+
+  @media (max-width: 480px) {
+    .partners-wrap { padding: 20px 16px 40px; }
+    .partner-features { grid-template-columns: 1fr 1fr; }
+    .partner-discount-badge { font-size: 0.75rem; padding: 5px 10px; }
+  }
+
   @media (max-width: 480px) {
     .modal { max-height: 95vh; }
     .modal-slider-track img { max-height: 50vh; }
@@ -1006,6 +1145,7 @@
   <button class="tab-btn active" onclick="switchTab('catalog', event)">🛍 상품 카탈로그</button>
   <button class="tab-btn" onclick="switchTab('events', event)">📅 행사 스케줄</button>
   <button class="tab-btn" onclick="switchTab('storage', event)">📦 짐 보관</button>
+  <button class="tab-btn" onclick="switchTab('partners', event)">🤝 공식 파트너</button>
 </nav>
 <div id="page-catalog" class="page active">
 <div class="filter-section">
@@ -1104,6 +1244,105 @@
   </div>
 </div><!-- /page-storage -->
 
+<div id="page-partners" class="page">
+  <div class="partners-wrap">
+    <div class="partners-header">
+      <div class="partners-header-label">OFFICIAL PARTNERS</div>
+      <div class="partners-header-title">공식 파트너</div>
+      <div class="partners-header-desc">디스토피아와 함께하는 브랜드 및 서비스를 소개합니다</div>
+    </div>
+
+    <!-- Obedience -->
+    <div class="partner-card">
+      <div class="partner-top">
+        <div class="partner-icon">📱</div>
+        <div class="partner-info">
+          <div class="partner-name">Obedience</div>
+          <div class="partner-tagline">BDSM 습관 트래커 앱</div>
+        </div>
+        <div class="partner-discount-badge">20% OFF</div>
+      </div>
+      <div class="partner-desc">
+        D/s 관계를 위한 습관 트래킹 앱이에요! Dom은 sub의 습관·미션을 설정하고, sub는 포인트를 쌓아 보상을 받거나 벌을 받는 시스템으로 훈육에 필요한 모든 기능이 한 앱에!
+      </div>
+      <div class="partner-features">
+        <div class="partner-feature">✦ 일/주간 습관 트래킹</div>
+        <div class="partner-feature">✦ 미션 · 보상 · 벌 설정</div>
+        <div class="partner-feature">✦ 포인트 적립 시스템</div>
+        <div class="partner-feature">✦ Dom · sub 실시간 연동</div>
+        <div class="partner-feature">✦ 습관 통계 및 그래프</div>
+        <div class="partner-feature">✦ 완료 인증 사진 기능 (프리미엄)</div>
+      </div>
+      <a href="https://obedienceapp.com/disstopia" target="_blank" class="partner-btn">
+        🔗 디스토피아 제휴 할인으로 시작하기 →
+      </a>
+      <div class="partner-note">obedienceapp.com/disstopia · 유료 결제 시 20% 할인 적용</div>
+    </div>
+
+    <!-- FeturaX -->
+    <div class="partner-card">
+      <div class="partner-top">
+        <div class="partner-icon">🦴</div>
+        <div class="partner-info">
+          <div class="partner-name">FeturaX</div>
+          <div class="partner-tagline">실리콘 수트 · 드론후드 · 퍼리 용품 공식 대리점</div>
+        </div>
+        <div class="partner-discount-badge" style="background:linear-gradient(135deg,#cc44ff,#00e5ff);">공식 대리점</div>
+      </div>
+      <div class="partner-desc">
+        FeturaX 공식 대리점으로, 실리콘 수트·드론후드·육구양말 등 퍼리 및 페티시 실리콘 제품을 취급해요. 공식 사이트보다 간편하게 구매할 수 있고, 때로는 더 저렴하거나 커스터마이징 옵션도 가능해요. 구매 전 문의도 환영합니다!
+      </div>
+      <div class="partner-features">
+        <div class="partner-feature">✦ 실리콘 수트 · 캣수트</div>
+        <div class="partner-feature">✦ 드론후드 · 퍼피후드</div>
+        <div class="partner-feature">✦ 육구양말 · 글러브</div>
+        <div class="partner-feature">✦ 커스터마이징 가능</div>
+        <div class="partner-feature">✦ 공식 사이트보다 간편한 구매</div>
+        <div class="partner-feature">✦ 구매 전 문의 환영</div>
+      </div>
+      <a href="https://pf.kakao.com/_vwxcxhX" target="_blank" class="partner-btn" style="background:linear-gradient(135deg,#cc44ff,#00e5ff);">
+        💬 카카오채널로 구매 문의하기 →
+      </a>
+      <div class="partner-note">feturax.com 공식 대리점 · 주문/제작/통관 대행</div>
+    </div>
+
+    <!-- Nothosaur -->
+    <div class="partner-card">
+      <div class="partner-top">
+        <div class="partner-icon">🐉</div>
+        <div class="partner-info">
+          <div class="partner-name">Nothosaur</div>
+          <div class="partner-tagline">판타지 몬스터 딜도 &amp; 프리미엄 성인용품</div>
+        </div>
+        <div class="partner-discount-badge" style="background:linear-gradient(135deg,#ff7700,#ff2d9b);">10% OFF</div>
+      </div>
+      <div class="partner-desc">
+        판타지 세계관을 담은 인외·동물·촉수·산란 딜도 등 독창적인 실리콘 성인용품 브랜드예요. 디스토피아를 통해 구매하면 사전 문의로 더 다양한 옵션 상담이 가능하고 구매 과정도 훨씬 간편해요! 제휴 링크나 쿠폰코드로 직접 쇼핑 시 10% 할인도 적용돼요.
+      </div>
+      <div class="partner-features">
+        <div class="partner-feature">✦ 인외·몬스터 딜도</div>
+        <div class="partner-feature">✦ 동물·촉수·산란 딜도</div>
+        <div class="partner-feature">✦ 애널 플러그 · 콕링</div>
+        <div class="partner-feature">✦ 하네스 · 러브젤</div>
+        <div class="partner-feature">✦ 색상·경도 커스텀 주문</div>
+        <div class="partner-feature">✦ 백금실리콘 안전 소재</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+        <a href="https://pf.kakao.com/_vwxcxhX" target="_blank" class="partner-btn" style="flex:1;min-width:180px;background:linear-gradient(135deg,#cc44ff,#ff2d9b);">
+          💬 디스토피아 통해 구매 문의 →
+        </a>
+        <a href="https://nothosaur.co.kr/discount/Disstopia?ref=pjnscoaw" target="_blank" class="partner-btn" style="flex:1;min-width:180px;background:linear-gradient(135deg,#ff7700,#ff2d9b);">
+          🔗 제휴 링크로 직접 쇼핑 →
+        </a>
+      </div>
+      <div class="partner-note" style="background:var(--surface2);border:1px solid #2a1a2a;border-radius:8px;padding:10px 14px;color:var(--text-muted);font-size:0.78rem;letter-spacing:0.03em;">
+        쿠폰코드 <strong style="color:var(--accent);letter-spacing:0.1em;">Disstopia</strong> 입력해도 10% 할인 적용돼요!
+      </div>
+    </div>
+
+  </div>
+</div><!-- /page-partners -->
+
 
 <footer>
   <a href="https://pf.kakao.com/_vwxcxhX" class="footer-kakao" target="_blank">
@@ -1142,11 +1381,9 @@ const products = [
   { id:25, name:"타고 남은것 목줄", uso:["구속"], mat:["가죽"], level:null, price:"150,000원", custom:true, isNew:false, img:"https://pbs.twimg.com/media/Ge-DQ-ZbcAAqhNe?format=png&name=900x900", emoji:"🐕‍🦺" },
   { id:26, name:"신성모독 패들", uso:["스팽"], mat:["기타재질"], level:null, price:"120,000원", custom:false, isNew:false, imgs:["https://pbs.twimg.com/media/Ge-EO1SbwAMMFZZ?format=png&name=small","https://pbs.twimg.com/media/Ge-EWQbbwAAQD1U?format=png&name=small"], note:"원목 · 400×70mm", emoji:"✝️" },
   { id:27, name:"초보용 플로거", uso:["스팽"], mat:["가죽"], level:"입문자", price:"100,000원", custom:false, isNew:false, img:"https://pbs.twimg.com/media/Ge-EjqnawAAGfXC?format=png&name=900x900", note:"50cm · BDSM 키트 플로거보다 아프지만 못마조도 충분히 즐길 수 있는 입문용", emoji:"🌸" },
-  { id:28, name:"개그/딜도 마스크", uso:["개그","기타"], mat:["기타재질"], level:null, price:"가격문의", custom:false, isNew:false, imgs:["https://pbs.twimg.com/media/Gz9uJLkbkAAxcbW?format=jpg&name=medium","https://pbs.twimg.com/media/Gz9uK8Cb0AA5_cS?format=jpg&name=large"], note:"HHD", emoji:"🎭" },
   { id:29, name:"ROOMFUN 지지직펜+전류채찍 세트", uso:["일렉"], mat:["기타재질"], level:null, price:"100,000원", custom:false, isNew:true, imgs:["https://pbs.twimg.com/media/HDHCFYEaMAgITV1?format=jpg&name=large","https://pbs.twimg.com/media/Ge9wyVjbwAI5LuV?format=png&name=small"], note:"본체에 헤드만 교체하면 펜/채찍 전환 가능 · 🔧 ROOMFUN 브랜드 · 1년 무상 AS 가능", emoji:"⚡" },
   { id:30, name:"수영복 코스튬", uso:["기타"], mat:["기타재질"], level:null, price:"가격문의", custom:true, isNew:true, imgs:["https://pbs.twimg.com/media/G9f1QPqbYAAYdyL?format=jpg&name=large","https://pbs.twimg.com/media/G9f1QPxbIAAcym9?format=jpg&name=large"], note:"꼬툭튀 방지 · 어깨 넓어보임 방지 넥라인 · 바디라인 맞춤 · 사이즈 문의", emoji:"🩱" },
   { id:31, name:"저온초", uso:["기타"], mat:["기타재질"], level:null, price:"가격문의 (많이 살수록 저렴)", custom:true, isNew:false, img:"https://pbs.twimg.com/media/G8iI9U5bkAAFU3k?format=jpg&name=large", note:"단색 135g 기준 · 색상 지정 가능 · ⚠ 여름 주문 불가", emoji:"🕯️" },
-  { id:32, name:"티클링 머신", uso:["기타"], mat:["기타재질"], level:null, price:"가격문의", custom:false, isNew:false, img:"https://pbs.twimg.com/media/HDR0TsybQAITZ8-?format=png&name=small", emoji:"🤖" },
   { id:33, name:"머미플붕대", uso:["구속"], mat:["기타재질"], level:null, price:"60,000원 / 1롤 (10m)", custom:false, isNew:false, imgs:["https://pbs.twimg.com/media/G_ePAkWXoAAsIDD?format=jpg&name=medium","https://pbs.twimg.com/media/G_ePAiOaYAAlpMw?format=jpg&name=medium"], note:"한 롤 10m · 머미플 5~6개 분량 · 옷 입듯 씌우면 완성 · 여러 겹으로 구속감 UP", emoji:"🩹" },
   { id:34, name:"꼬리 주문제작용 샘플", uso:["애널"], mat:["기타재질"], level:null, price:"가격문의", custom:true, isNew:false, imgs:["https://pbs.twimg.com/media/G5mOYY9acAIGLwA?format=jpg&name=medium","https://pbs.twimg.com/media/HBlocf6bAAAuNtT?format=jpg&name=large","https://pbs.twimg.com/media/HAb1ziEbEAAxzpg?format=jpg&name=large","https://pbs.twimg.com/media/HAXwRcjaIAASJsx?format=jpg&name=large","https://pbs.twimg.com/media/HASUpteboAA5gz9?format=jpg&name=large","https://pbs.twimg.com/media/G9TbTpdbcAATpH0?format=jpg&name=large","https://pbs.twimg.com/media/G9TbP9IbMAAujfi?format=jpg&name=large","https://pbs.twimg.com/media/G9TbQm6aMAAk2Yp?format=jpg&name=large","https://pbs.twimg.com/media/G9TbRLxa8AAVDgD?format=jpg&name=large","https://pbs.twimg.com/media/G9TbRwebwAAq-YD?format=jpg&name=large","https://pbs.twimg.com/media/G9TbIVMbgAAn4BF?format=jpg&name=large","https://pbs.twimg.com/media/G9TbI7ubkAAA4ps?format=jpg&name=large","https://pbs.twimg.com/media/G9TbJiJa4AA8Up1?format=jpg&name=large","https://pbs.twimg.com/media/G9TbKGuaIAAB28B?format=jpg&name=large"], note:"꼬리 주문제작 시 참고용 샘플 · 색상·디자인 문의 가능 · 세트로 니플클램프/초커/가터/귀머리띠도 함께 주문 가능", emoji:"🎀" },
   { id:58, name:"입문자 정조대", uso:["기타"], mat:["기타재질"], level:"입문자", price:"40,000원", custom:false, isNew:true, imgs:["https://pbs.twimg.com/media/HDhYMBdboAEZGkc?format=jpg&name=small","https://pbs.twimg.com/media/HDhYMLZbAAEUaMu?format=jpg&name=900x900","https://pbs.twimg.com/media/HDhYMNobQAAaQMt?format=jpg&name=900x900","https://pbs.twimg.com/media/HDhYMOGbMAAttNc?format=jpg&name=small"], note:"플라스틱 재질 · 사이즈 4종 · 색상 4종", emoji:"🔒" },
@@ -1177,6 +1414,12 @@ const products = [
   { id:61, name:"목줄 주문제작 샘플 2", uso:["구속"], mat:["가죽"], level:null, price:"가격문의", custom:true, isNew:true, imgs:["https://pbs.twimg.com/media/HDws_8dbEAEqdiy?format=jpg&name=4096x4096","https://pbs.twimg.com/media/HDwtA-CbcAEqsQq?format=jpg&name=4096x4096","https://pbs.twimg.com/media/HDwtCIzbcAA8UoT?format=jpg&name=4096x4096","https://pbs.twimg.com/media/HDwtC8JaoAEOoMJ?format=jpg&name=large","https://pbs.twimg.com/media/HDws6GGakAAl2Q4?format=jpg&name=large","https://pbs.twimg.com/media/HDws7A9a8AACnvX?format=jpg&name=large","https://pbs.twimg.com/media/HDws7-Qa0AA0oci?format=jpg&name=4096x4096","https://pbs.twimg.com/media/HDws93Ga0AAbnwq?format=jpg&name=4096x4096","https://pbs.twimg.com/media/HDwtEljagAA7Bhh?format=jpg&name=4096x4096"], note:"레퍼런스나 스케치를 가져오시면 유사하게 제작해드립니다", emoji:"🐾" },
   { id:62, name:"가죽스팽도구 주문제작 샘플", uso:["스팽"], mat:["가죽"], level:null, price:"가격문의", custom:true, isNew:true, imgs:["https://pbs.twimg.com/media/HDwtG-OaAAAseMn?format=jpg&name=4096x4096","https://pbs.twimg.com/media/HDwtIZrbAAAbKhF?format=jpg&name=4096x4096","https://pbs.twimg.com/media/HDwtJ5FagAA6PKY?format=jpg&name=4096x4096"], note:"레퍼런스나 스케치를 가져오시면 유사하게 제작해드립니다", emoji:"🩸" },
   { id:35, name:"퍼피마스크", uso:["구속"], mat:["기타재질"], level:null, price:"120,000원", custom:false, isNew:true, imgs:["https://pbs.twimg.com/media/GtNy_5DbMAEz2oP?format=jpg&name=medium","https://pbs.twimg.com/media/GtNy_4HagAAEO6z?format=jpg&name=medium","https://pbs.twimg.com/media/HBxZdDhaAAAMuRh?format=jpg&name=large"], note:"원사이즈", emoji:"🐾" },
+  { id:63, name:"스트레잇 재킷 구속복", uso:["구속"], mat:["기타재질"], level:null, price:"가격문의", custom:true, isNew:true, imgs:["https://pbs.twimg.com/media/HET71tdbsAA_W3d?format=jpg&name=medium","https://pbs.twimg.com/media/HET71xBbYAEQPo_?format=jpg&name=medium"], emoji:"🧥" },
+  { id:64, name:"로프구속구", uso:["구속"], mat:["로프"], level:null, price:"가격문의", custom:false, isNew:true, imgs:["https://pbs.twimg.com/media/HET-ruRbYAMv3Ch?format=png&name=900x900","https://pbs.twimg.com/media/HET-sxmbYAAxLfb?format=jpg&name=medium"], emoji:"🪢" },
+  { id:65, name:"머미백 구속구", uso:["구속"], mat:["캔버스"], level:null, price:"가격문의", custom:true, isNew:true, imgs:["https://pbs.twimg.com/media/HEUcjeEa4AAB56i?format=png&name=900x900","https://pbs.twimg.com/media/HEUckBBbYAIGDdl?format=jpg&name=medium"], emoji:"🛍️" },
+  { id:66, name:"lambstudio 포근시리즈", uso:["구속"], mat:["PU레더"], level:null, price:"가격문의", custom:false, isNew:true, imgs:["https://pbs.twimg.com/media/HELYbasaIAMV7S9?format=jpg&name=large","https://pbs.twimg.com/media/HEQmHQUa8AAEw36?format=jpg&name=large","https://pbs.twimg.com/media/HEV2bGtaUAAwJ7A?format=jpg&name=large","https://pbs.twimg.com/media/HECBn17b0AAc9mi?format=jpg&name=large","https://pbs.twimg.com/media/HD6gcxVbgAAXl3O?format=jpg&name=large"], emoji:"🐑" },
+  { id:67, name:"전신구속복", uso:["구속"], mat:["기타재질"], level:null, price:"가격문의", custom:true, isNew:true, imgs:["https://pbs.twimg.com/media/G9LS8dfbwAAEOXq?format=jpg&name=large","https://pbs.twimg.com/media/G9LS8fFbMAA7iS6?format=jpg&name=large"], emoji:"🖤" },
+  { id:68, name:"하이힐연동펌프딜도", uso:["삽입"], mat:["기타재질"], level:null, price:"가격문의", custom:false, isNew:true, imgs:["https://pbs.twimg.com/media/G9LS8gaaEAIsW_C?format=jpg&name=900x900"], note:"신발을 내딛을때마다 펌프로 딜도가 커집니다!", emoji:"👠" },
 ];
 
 let filters = { uso:"all", mat:"all", lv:"all" };
