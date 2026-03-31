@@ -1657,7 +1657,9 @@ function openModal(id) {
   document.getElementById('modal-badges').innerHTML = badges.join('');
 
   // Title
-  document.getElementById('modal-title').textContent = p.name;
+  const titleEl = document.getElementById('modal-title');
+  titleEl.textContent = p.name;
+  titleEl.dataset.id = p.id;
 
   // Tags
   const tags = [
@@ -1739,10 +1741,151 @@ if (sessionStorage.getItem('age_verified') === '1') {
       <div class="modal-tags" id="modal-tags"></div>
       <div class="modal-price" id="modal-price"></div>
       <div class="modal-note" id="modal-note" style="display:none"></div>
-      <a href="https://pf.kakao.com/_vwxcxhX" target="_blank" class="modal-kakao">💬 카카오채널로 문의하기</a>
+      <button class="modal-kakao" onclick="openOrderForm()" style="border:none;cursor:pointer;">🛒 주문하기</button>
+      <a href="https://pf.kakao.com/_vwxcxhX" target="_blank" class="modal-kakao" style="margin-top:10px;background:#1a1a1a;border:1px solid #333;color:var(--text-muted);font-size:0.8rem;">💬 문의만 하기</a>
     </div>
   </div>
 </div>
+
+<!-- 주문폼 모달 -->
+<div id="order-overlay" style="display:none;position:fixed;inset:0;background:#000000cc;z-index:9999;overflow-y:auto;padding:20px;">
+  <div style="background:#111;border:1px solid #2a1a2a;border-radius:16px;max-width:480px;margin:0 auto;padding:24px;position:relative;">
+    <button onclick="closeOrderForm()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:#888;font-size:1.2rem;cursor:pointer;">✕</button>
+    
+    <div style="margin-bottom:20px;">
+      <div style="font-family:'Bebas Neue','Black Han Sans',sans-serif;font-size:1.4rem;color:#ff2d9b;letter-spacing:0.06em;font-style:italic;margin-bottom:4px;">ORDER</div>
+      <div id="order-product-name" style="font-size:1rem;font-weight:700;color:#f0e8f0;margin-bottom:2px;"></div>
+      <div id="order-product-price" style="font-size:0.85rem;color:#ff2d9b;"></div>
+    </div>
+
+    <!-- 계좌 안내 -->
+    <div style="background:#0f0a18;border:1px solid #3a1a3a;border-left:3px solid #00e5ff;border-radius:8px;padding:12px 14px;margin-bottom:20px;font-size:0.82rem;color:#9b8a9b;line-height:1.8;">
+      💳 <strong style="color:#f0e8f0;">토스 100029881117 ㅊㅅㅇ</strong>으로 입금해주세요<br>
+      <span style="font-size:0.75rem;">주문 완료 후 카카오채널로 입금 완료 알림 보내주시면 처리됩니다</span>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px;">
+
+      <div>
+        <label style="font-size:0.75rem;color:#9b8a9b;letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:6px;">수량 *</label>
+        <input id="ord-qty" type="number" min="1" value="1" style="width:100%;background:#0a0a0a;border:1px solid #2a1a2a;border-radius:8px;color:#f0e8f0;padding:10px 12px;font-size:0.95rem;outline:none;" onfocus="this.style.borderColor='#ff2d9b'" onblur="this.style.borderColor='#2a1a2a'">
+      </div>
+
+      <div>
+        <label style="font-size:0.75rem;color:#9b8a9b;letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:6px;">입금자명 *</label>
+        <input id="ord-sender" type="text" placeholder="토스 입금 시 표시되는 이름" style="width:100%;background:#0a0a0a;border:1px solid #2a1a2a;border-radius:8px;color:#f0e8f0;padding:10px 12px;font-size:0.95rem;outline:none;" onfocus="this.style.borderColor='#ff2d9b'" onblur="this.style.borderColor='#2a1a2a'">
+      </div>
+
+      <div>
+        <label style="font-size:0.75rem;color:#9b8a9b;letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:6px;">실명 *</label>
+        <input id="ord-name" type="text" placeholder="통관용 실명" style="width:100%;background:#0a0a0a;border:1px solid #2a1a2a;border-radius:8px;color:#f0e8f0;padding:10px 12px;font-size:0.95rem;outline:none;" onfocus="this.style.borderColor='#ff2d9b'" onblur="this.style.borderColor='#2a1a2a'">
+      </div>
+
+      <div>
+        <label style="font-size:0.75rem;color:#9b8a9b;letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:6px;">통관고유부호 *</label>
+        <input id="ord-customs" type="text" placeholder="P로 시작하는 13자리 또는 개인통관고유부호" style="width:100%;background:#0a0a0a;border:1px solid #2a1a2a;border-radius:8px;color:#f0e8f0;padding:10px 12px;font-size:0.95rem;outline:none;" onfocus="this.style.borderColor='#ff2d9b'" onblur="this.style.borderColor='#2a1a2a'">
+      </div>
+
+      <div>
+        <label style="font-size:0.75rem;color:#9b8a9b;letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:6px;">전화번호 *</label>
+        <input id="ord-phone" type="tel" placeholder="010-0000-0000" style="width:100%;background:#0a0a0a;border:1px solid #2a1a2a;border-radius:8px;color:#f0e8f0;padding:10px 12px;font-size:0.95rem;outline:none;" onfocus="this.style.borderColor='#ff2d9b'" onblur="this.style.borderColor='#2a1a2a'">
+      </div>
+
+      <div>
+        <label style="font-size:0.75rem;color:#9b8a9b;letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:6px;">배송 주소 *</label>
+        <input id="ord-addr" type="text" placeholder="도로명 주소" style="width:100%;background:#0a0a0a;border:1px solid #2a1a2a;border-radius:8px;color:#f0e8f0;padding:10px 12px;font-size:0.95rem;outline:none;margin-bottom:6px;" onfocus="this.style.borderColor='#ff2d9b'" onblur="this.style.borderColor='#2a1a2a'">
+        <input id="ord-zip" type="text" placeholder="우편번호 (예: 04000)" style="width:100%;background:#0a0a0a;border:1px solid #2a1a2a;border-radius:8px;color:#f0e8f0;padding:10px 12px;font-size:0.95rem;outline:none;" onfocus="this.style.borderColor='#ff2d9b'" onblur="this.style.borderColor='#2a1a2a'">
+      </div>
+
+      <div>
+        <label style="font-size:0.75rem;color:#9b8a9b;letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:6px;">현금영수증 번호 <span style="color:#4a3a4a;font-size:0.7rem;">(선택)</span></label>
+        <input id="ord-receipt" type="tel" placeholder="필요하신 경우 전화번호 입력" style="width:100%;background:#0a0a0a;border:1px solid #2a1a2a;border-radius:8px;color:#f0e8f0;padding:10px 12px;font-size:0.95rem;outline:none;" onfocus="this.style.borderColor='#ff2d9b'" onblur="this.style.borderColor='#2a1a2a'">
+      </div>
+
+      <div>
+        <label style="font-size:0.75rem;color:#9b8a9b;letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:6px;">추가 요청사항 <span style="color:#4a3a4a;font-size:0.7rem;">(선택)</span></label>
+        <textarea id="ord-memo" placeholder="색상, 사이즈, 커스텀 요청 등" rows="3" style="width:100%;background:#0a0a0a;border:1px solid #2a1a2a;border-radius:8px;color:#f0e8f0;padding:10px 12px;font-size:0.95rem;outline:none;resize:vertical;font-family:inherit;" onfocus="this.style.borderColor='#ff2d9b'" onblur="this.style.borderColor='#2a1a2a'"></textarea>
+      </div>
+
+      <div id="ord-error" style="display:none;background:#1a0010;border:1px solid #ff2d9b44;border-radius:8px;padding:10px 14px;font-size:0.82rem;color:#ff2d9b;"></div>
+
+      <button onclick="submitOrder()" style="width:100%;background:linear-gradient(135deg,#ff2d9b,#cc44ff);border:none;border-radius:10px;color:#fff;font-weight:700;font-size:0.95rem;padding:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;letter-spacing:0.03em;">
+        💬 카카오채널로 주문 전송하기
+      </button>
+
+      <div style="font-size:0.72rem;color:#3a2a3a;text-align:center;line-height:1.6;">
+        버튼을 누르면 카카오톡이 열리며 주문 내용이 자동 입력됩니다<br>전송 버튼을 눌러 주문을 완료해주세요
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+let _orderProduct = null;
+
+function openOrderForm() {
+  const id = parseInt(document.getElementById('modal-title').dataset.id || 0);
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  _orderProduct = p;
+  document.getElementById('order-product-name').textContent = p.name;
+  document.getElementById('order-product-price').textContent = p.price;
+  document.getElementById('ord-qty').value = 1;
+  document.getElementById('ord-sender').value = '';
+  document.getElementById('ord-name').value = '';
+  document.getElementById('ord-customs').value = '';
+  document.getElementById('ord-phone').value = '';
+  document.getElementById('ord-addr').value = '';
+  document.getElementById('ord-zip').value = '';
+  document.getElementById('ord-receipt').value = '';
+  document.getElementById('ord-memo').value = '';
+  document.getElementById('ord-error').style.display = 'none';
+  document.getElementById('order-overlay').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeOrderForm() {
+  document.getElementById('order-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function submitOrder() {
+  const qty      = document.getElementById('ord-qty').value.trim();
+  const sender   = document.getElementById('ord-sender').value.trim();
+  const name     = document.getElementById('ord-name').value.trim();
+  const customs  = document.getElementById('ord-customs').value.trim();
+  const phone    = document.getElementById('ord-phone').value.trim();
+  const addr     = document.getElementById('ord-addr').value.trim();
+  const zip      = document.getElementById('ord-zip').value.trim();
+  const receipt  = document.getElementById('ord-receipt').value.trim();
+  const memo     = document.getElementById('ord-memo').value.trim();
+  const errEl    = document.getElementById('ord-error');
+
+  if (!sender || !name || !customs || !phone || !addr || !zip) {
+    errEl.textContent = '필수 항목을 모두 입력해주세요.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const p = _orderProduct;
+  let msg = `[주문] ${p.name}`;
+  msg += `\n수량: ${qty}개`;
+  msg += `\n입금자명: ${sender}`;
+  msg += `\n실명: ${name}`;
+  msg += `\n통관고유부호: ${customs}`;
+  msg += `\n전화번호: ${phone}`;
+  msg += `\n주소: ${addr}`;
+  msg += `\n우편번호: ${zip}`;
+  if (receipt) msg += `\n현금영수증: ${receipt}`;
+  if (memo)    msg += `\n요청사항: ${memo}`;
+  msg += `\n\n입금은 토스 100029881117 ㅊㅅㅇ으로 송금 후 이 채팅으로 알려주세요!`;
+
+  const kakaoUrl = `https://pf.kakao.com/_vwxcxhX/chat?context=${encodeURIComponent(msg)}`;
+  window.open(kakaoUrl, '_blank');
+  closeOrderForm();
+}
+</script>
 
 </body>
 </html>
