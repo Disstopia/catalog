@@ -1816,14 +1816,30 @@ if (sessionStorage.getItem('age_verified') === '1') {
       <div id="ord-error" style="display:none;background:#1a0010;border:1px solid #ff2d9b44;border-radius:8px;padding:10px 14px;font-size:0.82rem;color:#ff2d9b;"></div>
 
       <button onclick="submitOrder()" style="width:100%;background:linear-gradient(135deg,#ff2d9b,#cc44ff);border:none;border-radius:10px;color:#fff;font-weight:700;font-size:0.95rem;padding:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;letter-spacing:0.03em;">
-        💬 카카오채널로 주문 전송하기
+        📋 주문 내용 복사하기
       </button>
 
       <div style="font-size:0.72rem;color:#3a2a3a;text-align:center;line-height:1.6;">
-        버튼을 누르면 카카오톡이 열리며 주문 내용이 자동 입력됩니다<br>전송 버튼을 눌러 주문을 완료해주세요
-      </div>
+        버튼을 누르면 주문 내용이 클립보드에 복사됩니다<br>카카오채널 채팅창에 붙여넣기(길게 누르기) 후 전송해주세요</div>
 
     </div>
+  </div>
+</div>
+
+<!-- 복사 완료 안내 팝업 -->
+<div id="copy-done-overlay" style="display:none;position:fixed;inset:0;background:#000000cc;z-index:10000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#111;border:1px solid #2a1a2a;border-radius:16px;max-width:360px;width:100%;padding:28px 24px;text-align:center;">
+    <div style="font-size:2rem;margin-bottom:12px;">📋</div>
+    <div style="font-size:1.1rem;font-weight:700;color:#f0e8f0;margin-bottom:8px;">주문 내용이 복사됐어요!</div>
+    <div style="font-size:0.83rem;color:#9b8a9b;line-height:1.8;margin-bottom:24px;">
+      카카오채널 채팅창을 열고<br>
+      메시지 입력창을 <strong style="color:#f0e8f0;">길게 눌러 붙여넣기</strong> 후<br>
+      전송해주세요
+    </div>
+    <a href="https://pf.kakao.com/_vwxcxhX" target="_blank" onclick="document.getElementById('copy-done-overlay').style.display='none';document.body.style.overflow='';" style="display:block;background:#FEE500;color:#191600;font-weight:700;font-size:0.95rem;padding:13px;border-radius:10px;text-decoration:none;margin-bottom:10px;">
+      💬 카카오채널 열기
+    </a>
+    <button onclick="document.getElementById('copy-done-overlay').style.display='none';document.body.style.overflow='';" style="background:none;border:none;color:#4a3a4a;font-size:0.8rem;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">닫기</button>
   </div>
 </div>
 
@@ -1887,9 +1903,16 @@ function submitOrder() {
   if (memo)    msg += `\n요청사항: ${memo}`;
   msg += `\n\n입금은 토스 100029881117 ㅊㅅㅇ으로 송금 후 이 채팅으로 알려주세요!`;
 
-  const kakaoUrl = `https://pf.kakao.com/_vwxcxhX/chat?context=${encodeURIComponent(msg)}`;
-  window.open(kakaoUrl, '_blank');
-  closeOrderForm();
+  // 클립보드 복사
+  navigator.clipboard.writeText(msg).then(() => {
+    // 복사 성공 → 안내 팝업 띄우고 카톡 열기
+    document.getElementById('order-overlay').style.display = 'none';
+    document.getElementById('copy-done-overlay').style.display = 'flex';
+  }).catch(() => {
+    // 클립보드 실패 시 텍스트 직접 보여주기
+    errEl.innerHTML = '클립보드 복사에 실패했어요. 아래 내용을 직접 복사해서 카톡으로 보내주세요:<br><br><textarea style="width:100%;height:120px;background:#0a0a0a;color:#f0e8f0;border:1px solid #333;border-radius:6px;padding:8px;font-size:0.78rem;">' + msg + '</textarea>';
+    errEl.style.display = 'block';
+  });
 }
 </script>
 
