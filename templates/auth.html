@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>디스토피아</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: #0a0a0a;
+  color: #eee;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
+}
+.icon { font-size: 2.5rem; margin-bottom: 1.25rem; display: block; }
+.title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+.sub { font-size: 0.85rem; color: #888; margin-bottom: 1.5rem; line-height: 1.6; }
+input {
+  width: 100%;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 10px;
+  color: #eee;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  outline: none;
+  margin-bottom: 0.75rem;
+  text-align: center;
+  letter-spacing: 0.1em;
+}
+input:focus { border-color: #e05c97; }
+button {
+  width: 100%;
+  padding: 0.85rem;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #e05c97, #c04080);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:hover { opacity: 0.9; }
+.error { margin-top: 0.75rem; font-size: 0.8rem; color: #e05c97; min-height: 1.2em; }
+.hint { margin-top: 1.25rem; font-size: 0.75rem; color: #555; line-height: 1.6; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="card">
+  <span class="icon">🔒</span>
+  <p class="title">디스토피아 카탈로그</p>
+  <p class="sub">카카오 채널에서 안내받은<br>비밀번호를 입력해주세요.</p>
+  <input type="password" id="pw" placeholder="비밀번호" maxlength="20" autofocus>
+  <button onclick="submit()">입장하기</button>
+  <p class="error" id="err"></p>
+  <p class="hint">비밀번호는 카카오 채널에서<br>확인하실 수 있습니다.</p>
+</div>
+<script>
+document.getElementById('pw').addEventListener('keydown', e => {
+  if (e.key === 'Enter') submit();
+});
+async function submit() {
+  const pw = document.getElementById('pw').value.trim();
+  const err = document.getElementById('err');
+  if (!pw) { err.textContent = '비밀번호를 입력해주세요.'; return; }
+  const res = await fetch('/api/auth', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: pw })
+  });
+  if (res.ok) {
+    window.location.href = '/';
+  } else {
+    err.textContent = '비밀번호가 올바르지 않습니다.';
+    document.getElementById('pw').value = '';
+    document.getElementById('pw').focus();
+  }
+}
+</script>
+</body>
+</html>

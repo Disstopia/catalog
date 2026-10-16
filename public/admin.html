@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0a0a">
+<title>디스토피아 카탈로그 관리</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Oswald:wght@600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a; --surface: #131013; --surface2: #1b161b; --border: #2e232e;
+  --accent: #ff2d9b; --accent2: #cc44ff; --cyan: #00e5ff; --ok: #5ee08a; --danger: #ff4d6a;
+  --text: #f0e8f0; --muted: #a596a5; --dim: #5d4c5d;
+  --grad: linear-gradient(135deg, #ff2d9b, #cc44ff);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 15px; line-height: 1.5; min-height: 100vh; }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+.hidden { display: none !important; }
+
+/* 로그인 */
+.login { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.login-card { width: 100%; max-width: 340px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px 24px; text-align: center; }
+.brand { font-family: 'Oswald', sans-serif; letter-spacing: .12em; font-size: 1.5rem; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.login-card p { color: var(--muted); font-size: .85rem; margin: 6px 0 20px; }
+.login-card input { text-align: center; letter-spacing: .3em; font-size: 1.2rem; }
+
+/* 공통 입력 */
+.field { margin-bottom: 16px; }
+.field > label, .label { display: block; font-size: .78rem; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+.help { font-size: .74rem; color: var(--dim); margin-top: 5px; line-height: 1.5; }
+input[type=text], input[type=password], input[type=url], input[type=tel], textarea, select {
+  width: 100%; background: #0d0a0d; border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px; outline: none; font-size: 16px;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+.btn { border: 1px solid var(--border); background: var(--surface2); border-radius: 10px; padding: 10px 14px; font-size: .88rem; font-weight: 500; white-space: nowrap; }
+.btn:active { transform: scale(.98); }
+.btn-primary { background: var(--grad); border: none; color: #fff; font-weight: 700; }
+.btn-danger { color: var(--danger); border-color: #4a2030; background: transparent; }
+.btn-ghost { background: transparent; }
+.btn-block { width: 100%; padding: 13px; font-size: .95rem; }
+.btn-sm { padding: 6px 10px; font-size: .8rem; border-radius: 8px; }
+.err { color: var(--danger); font-size: .82rem; min-height: 1.3em; margin-top: 10px; }
+
+/* 상단 */
+.top { position: sticky; top: 0; z-index: 20; background: rgba(10,10,10,.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+.top-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px 8px; max-width: 760px; margin: 0 auto; }
+.top-row .brand { font-size: 1.1rem; }
+.top-row a { color: var(--muted); font-size: .8rem; text-decoration: none; }
+.tabs { display: flex; max-width: 760px; margin: 0 auto; padding: 0 8px; }
+.tab { flex: 1; background: none; border: none; border-bottom: 2px solid transparent; padding: 10px 4px; color: var(--muted); font-size: .9rem; font-weight: 500; }
+.tab.on { color: var(--accent); border-bottom-color: var(--accent); }
+main { max-width: 760px; margin: 0 auto; padding: 16px 16px 120px; }
+.warnbox { background: #2a1a05; border: 1px solid #6b4a10; color: #ffcf7a; border-radius: 10px; padding: 10px 12px; font-size: .82rem; margin-bottom: 14px; }
+
+/* 목록 */
+.toolbar { display: flex; gap: 8px; margin-bottom: 10px; }
+.toolbar input { flex: 1; }
+.subbar { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: .8rem; margin-bottom: 10px; gap: 8px; flex-wrap: wrap; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.seg button { background: none; border: none; padding: 5px 10px; font-size: .78rem; color: var(--muted); }
+.seg button.on { background: var(--surface2); color: var(--text); }
+.list { display: flex; flex-direction: column; gap: 8px; }
+.row { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 8px; }
+.row.is-hidden { opacity: .5; }
+.thumb { width: 56px; height: 56px; border-radius: 8px; background: var(--surface2); flex: none; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; }
+.row-main { flex: 1; min-width: 0; background: none; border: none; text-align: left; padding: 2px 0; }
+.row-name { font-weight: 700; font-size: .92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row-sub { color: var(--muted); font-size: .76rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pills { display: flex; gap: 4px; margin-top: 3px; flex-wrap: wrap; }
+.pill { font-size: .64rem; padding: 1px 6px; border-radius: 4px; font-weight: 700; letter-spacing: .03em; }
+.pill-new { background: var(--accent); color: #fff; }
+.pill-custom { background: #3a1a4a; color: #e0a0ff; }
+.pill-hidden { background: #333; color: #bbb; }
+.move { display: flex; flex-direction: column; gap: 4px; flex: none; }
+.move button { width: 34px; height: 28px; border-radius: 7px; border: 1px solid var(--border); background: var(--surface2); color: var(--muted); font-size: .8rem; line-height: 1; }
+.move button:disabled { opacity: .25; }
+.empty { text-align: center; color: var(--dim); padding: 40px 0; }
+
+/* 편집 시트 */
+.sheet { position: fixed; inset: 0; z-index: 50; background: var(--bg); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.sheet-head { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: rgba(10,10,10,.96); border-bottom: 1px solid var(--border); }
+.sheet-head h2 { flex: 1; font-size: 1rem; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sheet-body { max-width: 640px; margin: 0 auto; padding: 16px 16px 140px; }
+.sheet-foot { position: fixed; left: 0; right: 0; bottom: 0; z-index: 3; background: rgba(10,10,10,.97); border-top: 1px solid var(--border); padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
+.sheet-foot-inner { max-width: 640px; margin: 0 auto; display: flex; gap: 8px; }
+.sheet-foot-inner .btn-primary { flex: 1; }
+
+.photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+.photo { position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: var(--surface2); border: 1px solid var(--border); }
+.photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo .main-badge { position: absolute; top: 5px; left: 5px; background: var(--accent); color: #fff; font-size: .62rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+.photo .ctrl { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; padding: 4px; background: linear-gradient(transparent, rgba(0,0,0,.8)); }
+.photo .ctrl button { width: 30px; height: 28px; border-radius: 7px; border: none; background: rgba(0,0,0,.6); color: #fff; font-size: .85rem; }
+.photo .ctrl .x { color: #ff8aa0; }
+.photo.loading { display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: .75rem; }
+.photo-actions { display: flex; gap: 8px; }
+.photo-actions .btn { flex: 1; }
+
+.checks { display: flex; flex-wrap: wrap; gap: 6px; }
+.check { position: relative; }
+.check input { position: absolute; opacity: 0; pointer-events: none; }
+.check span { display: inline-block; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); font-size: .85rem; color: var(--muted); }
+.check input:checked + span { background: #3a0f28; border-color: var(--accent); color: #fff; }
+.check.extra span { border-style: dashed; }
+.add-chip { padding: 7px 12px; border-radius: 999px; border: 1px dashed var(--dim); background: none; color: var(--dim); font-size: .85rem; }
+
+.toggles { display: flex; flex-direction: column; gap: 2px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 4px 12px; }
+.toggle { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; gap: 12px; }
+.toggle + .toggle { border-top: 1px solid var(--border); }
+.toggle small { display: block; color: var(--dim); font-size: .74rem; }
+.switch { position: relative; width: 46px; height: 28px; flex: none; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch i { position: absolute; inset: 0; background: #333; border-radius: 999px; transition: .2s; }
+.switch i::after { content: ''; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: .2s; }
+.switch input:checked + i { background: var(--accent); }
+.switch input:checked + i::after { transform: translateX(18px); }
+
+.colors { display: flex; gap: 8px; flex-wrap: wrap; }
+.colors label { position: relative; }
+.colors input { position: absolute; opacity: 0; }
+.colors span { display: block; width: 38px; height: 38px; border-radius: 10px; border: 2px solid transparent; }
+.colors input:checked + span { border-color: #fff; box-shadow: 0 0 0 2px var(--bg) inset; }
+.pbtn { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 8px; }
+.pbtn-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: .8rem; color: var(--muted); }
+.pbtn input { margin-bottom: 8px; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+.card h3 { font-size: .98rem; margin-bottom: 4px; }
+.card > p { color: var(--muted); font-size: .8rem; margin-bottom: 14px; }
+.inline { display: flex; gap: 8px; }
+.inline input { flex: 1; }
+
+.toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%) translateY(20px); background: #222; border: 1px solid #444; color: #fff; padding: 10px 16px; border-radius: 999px; font-size: .86rem; opacity: 0; transition: .25s; z-index: 100; pointer-events: none; max-width: calc(100% - 32px); text-align: center; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.bad { background: #3a0f18; border-color: var(--danger); }
+.fab { position: fixed; right: 16px; bottom: calc(18px + env(safe-area-inset-bottom)); z-index: 30; border-radius: 999px; padding: 14px 20px; box-shadow: 0 6px 24px rgba(255,45,155,.35); }
+</style>
+</head>
+<body>
+
+<!-- 로그인 -->
+<section id="login" class="login">
+  <div class="login-card">
+    <div class="brand">DISSTOPIA</div>
+    <p>카탈로그 관리자 PIN을 입력해 주세요</p>
+    <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="40">
+    <button id="loginBtn" class="btn btn-primary btn-block" style="margin-top:12px">들어가기</button>
+    <div id="loginErr" class="err"></div>
+  </div>
+</section>
+
+<!-- 관리 화면 -->
+<section id="app" class="hidden">
+  <div class="top">
+    <div class="top-row">
+      <div class="brand">DISSTOPIA 관리</div>
+      <a href="/" target="_blank" rel="noopener">카탈로그 보기 ↗</a>
+    </div>
+    <nav class="tabs">
+      <button class="tab on" data-tab="products">상품</button>
+      <button class="tab" data-tab="partners">공식 파트너</button>
+      <button class="tab" data-tab="settings">설정</button>
+    </nav>
+  </div>
+
+  <main>
+    <div id="memWarn" class="warnbox hidden">지금은 테스트용 임시 저장소예요. Vercel에서 Upstash Redis를 연결해야 저장한 내용이 유지돼요.</div>
+
+    <!-- 상품 -->
+    <div id="tab-products">
+      <div class="toolbar">
+        <input id="q" type="text" placeholder="상품명 검색">
+      </div>
+      <div class="subbar">
+        <span id="pCount"></span>
+        <div class="seg" id="pView">
+          <button class="on" data-v="all">전체</button>
+          <button data-v="shown">공개</button>
+          <button data-v="hidden">숨김</button>
+        </div>
+      </div>
+      <div id="pList" class="list"></div>
+      <button id="addProduct" class="btn btn-primary fab">＋ 새 상품</button>
+    </div>
+
+    <!-- 파트너 -->
+    <div id="tab-partners" class="hidden">
+      <div class="subbar"><span id="ptCount"></span><button id="addPartner" class="btn btn-sm">＋ 파트너 추가</button></div>
+      <div id="ptList" class="list"></div>
+    </div>
+
+    <!-- 설정 -->
+    <div id="tab-settings" class="hidden">
+      <div class="card">
+        <h3>📅 행사 캘린더 링크</h3>
+        <p>카탈로그 위쪽 탭 줄에 캘린더로 가는 버튼이 생겨요. 비워두면 버튼이 사라져요.</p>
+        <div class="field"><label for="sCal">캘린더 주소</label><input id="sCal" type="url" placeholder="https://..."></div>
+        <div class="field"><label for="sCalLabel">버튼 이름</label><input id="sCalLabel" type="text" maxlength="30" placeholder="📅 행사 일정"></div>
+        <button class="btn btn-primary btn-block" id="saveCal">저장</button>
+      </div>
+
+      <div class="card">
+        <h3>🏷 필터 목록 (용도 · 재질)</h3>
+        <p>카탈로그 필터 버튼과 상품 편집 화면의 선택지가 여기서 정해져요. 한 줄에 하나씩 적어요. 순서대로 보여요.</p>
+        <div class="field"><label for="sUso">용도</label><textarea id="sUso" rows="6"></textarea></div>
+        <div class="field"><label for="sMat">재질</label><textarea id="sMat" rows="6"></textarea>
+          <div class="help">'기타재질'은 카탈로그에 '기타'로 보여요.</div></div>
+        <button class="btn btn-primary btn-block" id="saveLists">저장</button>
+      </div>
+
+      <div class="card">
+        <h3>🔒 카탈로그 비밀번호</h3>
+        <p>손님이 카탈로그에 들어갈 때 넣는 비밀번호예요. 바꾸면 이미 들어와 있던 사람도 새 비밀번호를 다시 넣어야 해요.</p>
+        <div class="inline"><input id="sPw" type="text" autocomplete="off" maxlength="40"><button class="btn btn-primary" id="savePw">변경</button></div>
+      </div>
+
+      <div class="card">
+        <h3>🔑 관리자 PIN 변경</h3>
+        <p>이 관리 화면에 들어올 때 쓰는 PIN이에요. 바꾼 뒤에는 OWNER_PIN 환경변수 대신 새 PIN을 써요.</p>
+        <div class="inline"><input id="sPin" type="password" inputmode="numeric" maxlength="40" placeholder="새 PIN (4자리 이상)"><button class="btn btn-primary" id="savePin">변경</button></div>
+      </div>
+
+      <button class="btn btn-ghost btn-block" id="logout">로그아웃</button>
+    </div>
+  </main>
+</section>
+
+<!-- 상품 편집 -->
+<section id="pSheet" class="sheet hidden">
+  <div class="sheet-head">
+    <button class="btn btn-sm btn-ghost" data-close>✕ 닫기</button>
+    <h2 id="pSheetTitle">상품</h2>
+    <span style="width:64px"></span>
+  </div>
+  <div class="sheet-body">
+    <div class="field">
+      <span class="label">사진 <span style="color:var(--dim)">(첫 번째 사진이 목록 대표 사진이에요)</span></span>
+      <div id="photos" class="photos"></div>
+      <div class="photo-actions">
+        <button class="btn" id="pickPhoto">📷 사진 올리기</button>
+        <button class="btn" id="addUrl">🔗 주소로 추가</button>
+      </div>
+      <input id="file" type="file" accept="image/*" multiple class="hidden">
+    </div>
+
+    <div class="field"><label for="fName">상품명 *</label><input id="fName" type="text" maxlength="100"></div>
+    <div class="field"><label for="fPrice">가격</label><input id="fPrice" type="text" maxlength="200" placeholder="예: 85,000원 / 가격문의">
+      <div class="help">글자 그대로 보여요. '가격문의', '85,000원~' 처럼 자유롭게 적어요.</div></div>
+
+    <div class="field"><span class="label">용도</span><div id="fUso" class="checks"></div></div>
+    <div class="field"><span class="label">재질</span><div id="fMat" class="checks"></div></div>
+    <div class="field"><span class="label">레벨</span>
+      <div class="checks" id="fLevel">
+        <label class="check"><input type="radio" name="lv" value=""><span>없음</span></label>
+        <label class="check"><input type="radio" name="lv" value="입문자"><span>입문자</span></label>
+        <label class="check"><input type="radio" name="lv" value="숙련자"><span>숙련자</span></label>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="toggles">
+        <label class="toggle"><div>NEW 표시<small>카드에 NEW 배지가 붙어요</small></div><span class="switch"><input type="checkbox" id="fNew"><i></i></span></label>
+        <label class="toggle"><div>주문제작<small>카드에 주문제작 배지가 붙어요</small></div><span class="switch"><input type="checkbox" id="fCustom"><i></i></span></label>
+        <label class="toggle"><div>숨기기<small>켜면 카탈로그에 안 보여요 (품절·준비 중일 때)</small></div><span class="switch"><input type="checkbox" id="fHidden"><i></i></span></label>
+      </div>
+    </div>
+
+    <div class="field"><label for="fNote">상세 설명</label><textarea id="fNote" rows="5" maxlength="3000" placeholder="예: 플러그 직경 2.6 / 3.3 / 4cm 중 선택 · 각인 추가 가능"></textarea>
+      <div class="help">가운뎃점( · )을 넣으면 상세 화면에서 그 자리마다 줄이 바뀌어요.</div></div>
+    <div class="field"><label for="fEmoji">이모지</label><input id="fEmoji" type="text" maxlength="16" placeholder="🎀" style="width:90px">
+      <div class="help">사진이 없을 때 대신 보여요.</div></div>
+
+    <div style="display:flex;gap:8px;margin-top:24px">
+      <button class="btn" id="pDup" style="flex:1">복제해서 새로 만들기</button>
+      <button class="btn btn-danger" id="pDel" style="flex:1">삭제</button>
+    </div>
+  </div>
+  <div class="sheet-foot"><div class="sheet-foot-inner">
+    <button class="btn btn-primary btn-block" id="pSave">저장</button>
+  </div></div>
+</section>
+
+<!-- 파트너 편집 -->
+<section id="ptSheet" class="sheet hidden">
+  <div class="sheet-head">
+    <button class="btn btn-sm btn-ghost" data-close>✕ 닫기</button>
+    <h2 id="ptSheetTitle">파트너</h2>
+    <span style="width:64px"></span>
+  </div>
+  <div class="sheet-body">
+    <div class="inline field">
+      <div style="width:80px"><label class="label" for="gIcon">아이콘</label><input id="gIcon" type="text" maxlength="16"></div>
+      <div style="flex:1"><label class="label" for="gName">이름 *</label><input id="gName" type="text" maxlength="80"></div>
+    </div>
+    <div class="field"><label for="gTag">한 줄 소개</label><input id="gTag" type="text" maxlength="120"></div>
+    <div class="field"><label for="gBadge">배지 문구</label><input id="gBadge" type="text" maxlength="30" placeholder="예: 20% OFF / 공식 대리점"></div>
+    <div class="field"><span class="label">배지 색</span><div class="colors" id="gColor"></div></div>
+    <div class="field"><label for="gDesc">설명</label><textarea id="gDesc" rows="5" maxlength="2000"></textarea>
+      <div class="help">**글자** 처럼 별표 두 개로 감싸면 굵게 보여요.</div></div>
+    <div class="field"><label for="gFeat">특징 (한 줄에 하나)</label><textarea id="gFeat" rows="6"></textarea></div>
+    <div class="field"><span class="label">버튼 (최대 3개)</span><div id="gBtns"></div>
+      <button class="btn btn-sm" id="gAddBtn">＋ 버튼 추가</button></div>
+    <div class="field"><label for="gNote">맨 아래 작은 글씨</label><input id="gNote" type="text" maxlength="300"></div>
+    <div class="field"><div class="toggles">
+      <label class="toggle"><div>숨기기<small>켜면 카탈로그에 안 보여요</small></div><span class="switch"><input type="checkbox" id="gHidden"><i></i></span></label>
+    </div></div>
+    <button class="btn btn-danger btn-block" id="ptDel" style="margin-top:16px">이 파트너 삭제</button>
+  </div>
+  <div class="sheet-foot"><div class="sheet-foot-inner">
+    <button class="btn btn-primary btn-block" id="ptSave">저장</button>
+  </div></div>
+</section>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} },
+};
+const COLORS = { pink:'#ff2d9b,#cc44ff', violet:'#cc44ff,#00e5ff', sunset:'#ff7700,#ff2d9b', flame:'#ff2d9b,#ff7700', cyan:'#00e5ff,#cc44ff', black:'#333,#666' };
+const grad = (c) => `linear-gradient(135deg,${COLORS[c] || COLORS.pink})`;
+
+let PIN = store.get('dcat_pin') || '';
+let S = { products: [], partners: [], settings: {} };
+
+function toast(msg, bad) {
+  const t = $('#toast'); t.textContent = msg; t.className = 'toast show' + (bad ? ' bad' : '');
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.className = 'toast', 2400);
+}
+
+async function api(action, data = {}) {
+  const r = await fetch('/api/admin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-admin-pin': PIN },
+    body: JSON.stringify({ action, ...data }),
+  });
+  const j = await r.json().catch(() => ({ error: '서버 응답 오류 (' + r.status + ')' }));
+  if (r.status === 401 && action !== 'load') { logout(); }
+  if (!r.ok) throw Object.assign(new Error(j.error || '오류가 났어요.'), { status: r.status });
+  return j;
+}
+
+// ---------- 로그인 ----------
+async function login(pin) {
+  PIN = pin;
+  try {
+    const j = await api('load');
+    store.set('dcat_pin', pin);
+    S = j;
+    $('#login').classList.add('hidden'); $('#app').classList.remove('hidden');
+    $('#memWarn').classList.toggle('hidden', !j.memory);
+    renderAll();
+  } catch (e) {
+    store.set('dcat_pin', null);
+    $('#login').classList.remove('hidden'); $('#app').classList.add('hidden');
+    $('#loginErr').textContent = e.message;
+  }
+}
+function logout() { store.set('dcat_pin', null); PIN = ''; location.reload(); }
+$('#loginBtn').onclick = () => login($('#pin').value.trim());
+$('#pin').addEventListener('keydown', e => { if (e.key === 'Enter') login($('#pin').value.trim()); });
+$('#logout').onclick = logout;
+
+document.querySelectorAll('.tab').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x === b));
+  ['products', 'partners', 'settings'].forEach(t => $('#tab-' + t).classList.toggle('hidden', t !== b.dataset.tab));
+  window.scrollTo(0, 0);
+});
+
+function renderAll() { renderProducts(); renderPartners(); renderSettings(); }
+
+// ---------- 상품 목록 ----------
+let view = 'all';
+$('#q').addEventListener('input', renderProducts);
+document.querySelectorAll('#pView button').forEach(b => b.onclick = () => {
+  view = b.dataset.v;
+  document.querySelectorAll('#pView button').forEach(x => x.classList.toggle('on', x === b));
+  renderProducts();
+});
+
+function thumbHtml(p) {
+  return p.imgs && p.imgs[0] ? `<img src="${esc(p.imgs[0])}" alt="" loading="lazy">` : esc(p.emoji || '✦');
+}
+
+function renderProducts() {
+  const q = $('#q').value.trim().toLowerCase();
+  const all = S.products;
+  const filtering = q || view !== 'all';
+  const list = all.filter(p => (!q || p.name.toLowerCase().includes(q)) && (view === 'all' || (view === 'hidden') === !!p.hidden));
+  const hiddenN = all.filter(p => p.hidden).length;
+  $('#pCount').textContent = `상품 ${all.length}개` + (hiddenN ? ` · 숨김 ${hiddenN}` : '') + (filtering ? '' : ' · 화살표로 순서 변경');
+  $('#pList').innerHTML = list.length ? list.map(p => {
+    const i = all.indexOf(p);
+    return `<div class="row${p.hidden ? ' is-hidden' : ''}">
+      <div class="thumb">${thumbHtml(p)}</div>
+      <button class="row-main" data-edit="${esc(p.id)}">
+        <div class="row-name">${esc(p.name)}</div>
+        <div class="row-sub">${esc(p.price || '가격 미입력')}</div>
+        <div class="pills">${p.isNew ? '<span class="pill pill-new">NEW</span>' : ''}${p.custom ? '<span class="pill pill-custom">주문제작</span>' : ''}${p.hidden ? '<span class="pill pill-hidden">숨김</span>' : ''}</div>
+      </button>
+      ${filtering ? '' : `<div class="move">
+        <button data-up="${i}" ${i === 0 ? 'disabled' : ''} aria-label="위로">▲</button>
+        <button data-down="${i}" ${i === all.length - 1 ? 'disabled' : ''} aria-label="아래로">▼</button>
+      </div>`}
+    </div>`;
+  }).join('') : '<div class="empty">상품이 없어요</div>';
+}
+
+$('#pList').addEventListener('click', async e => {
+  const ed = e.target.closest('[data-edit]');
+  if (ed) return openProduct(S.products.find(p => p.id === ed.dataset.edit));
+  const up = e.target.closest('[data-up]'), down = e.target.closest('[data-down]');
+  if (!up && !down) return;
+  const i = Number((up || down).dataset[up ? 'up' : 'down']);
+  const j = up ? i - 1 : i + 1;
+  const arr = [...S.products];
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  S.products = arr; renderProducts();
+  try { S.products = (await api('reorderProducts', { ids: arr.map(p => p.id) })).products; }
+  catch (err) { toast(err.message, true); }
+});
+
+// ---------- 상품 편집 ----------
+let cur = null, imgs = [], dirty = false, uploading = 0;
+const markDirty = () => { dirty = true; };
+$('#pSheet').addEventListener('input', markDirty);
+$('#pSheet').addEventListener('change', markDirty);
+
+function chipsHtml(name, options, selected) {
+  const extra = selected.filter(v => !options.includes(v));
+  return [...options, ...extra].map(v => `<label class="check${options.includes(v) ? '' : ' extra'}"><input type="checkbox" name="${name}" value="${esc(v)}" ${selected.includes(v) ? 'checked' : ''}><span>${esc(v === '기타재질' ? '기타(재질)' : v)}</span></label>`).join('')
+    + `<button type="button" class="add-chip" data-addchip="${name}">＋ 직접 입력</button>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-addchip]');
+  if (!b) return;
+  const v = (prompt('새로 넣을 이름') || '').trim();
+  if (!v) return;
+  const lab = document.createElement('label');
+  lab.className = 'check extra';
+  lab.innerHTML = `<input type="checkbox" name="${b.dataset.addchip}" value="${esc(v)}" checked><span>${esc(v)}</span>`;
+  b.before(lab); markDirty();
+});
+const checked = (name) => [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(i => i.value);
+
+function openProduct(p, isCopy) {
+  cur = p ? JSON.parse(JSON.stringify(p)) : { id: '', name: '', uso: [], mat: [], level: '', price: '', custom: false, isNew: true, hidden: false, imgs: [], note: '', emoji: '' };
+  if (isCopy) { cur.id = ''; cur.name = cur.name + ' (복사)'; }
+  imgs = [...(cur.imgs || [])];
+  $('#pSheetTitle').textContent = cur.id ? '상품 편집' : '새 상품';
+  $('#fName').value = cur.name; $('#fPrice').value = cur.price;
+  $('#fUso').innerHTML = chipsHtml('uso', S.settings.usoList || [], cur.uso || []);
+  $('#fMat').innerHTML = chipsHtml('mat', S.settings.matList || [], cur.mat || []);
+  document.querySelectorAll('input[name=lv]').forEach(r => r.checked = r.value === (cur.level || ''));
+  $('#fNew').checked = !!cur.isNew; $('#fCustom').checked = !!cur.custom; $('#fHidden').checked = !!cur.hidden;
+  $('#fNote').value = cur.note || ''; $('#fEmoji').value = cur.emoji || '';
+  $('#pDel').classList.toggle('hidden', !cur.id); $('#pDup').classList.toggle('hidden', !cur.id);
+  renderPhotos();
+  dirty = !!isCopy;
+  $('#pSheet').classList.remove('hidden'); $('#pSheet').scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+function closeSheet(id, force) {
+  if (!force && dirty && !confirm('저장하지 않은 내용이 있어요. 닫을까요?')) return;
+  $(id).classList.add('hidden'); document.body.style.overflow = ''; dirty = false;
+}
+document.querySelectorAll('[data-close]').forEach(b => b.onclick = () => closeSheet('#' + b.closest('.sheet').id));
+$('#addProduct').onclick = () => openProduct(null);
+$('#pDup').onclick = () => { if (dirty && !confirm('저장 안 한 수정 내용도 같이 복제돼요. 계속할까요?')) return; openProduct(readForm(), true); };
+
+function renderPhotos() {
+  $('#photos').innerHTML = imgs.map((u, i) => `<div class="photo">
+      <img src="${esc(u)}" alt="" onerror="this.style.opacity=.2">
+      ${i === 0 ? '<span class="main-badge">대표</span>' : ''}
+      <div class="ctrl">
+        <button data-pl="${i}" ${i === 0 ? 'style="visibility:hidden"' : ''} aria-label="앞으로">◀</button>
+        <button class="x" data-px="${i}" aria-label="삭제">✕</button>
+        <button data-pr="${i}" ${i === imgs.length - 1 ? 'style="visibility:hidden"' : ''} aria-label="뒤로">▶</button>
+      </div></div>`).join('')
+    + Array.from({ length: uploading }, () => '<div class="photo loading">올리는 중…</div>').join('');
+}
+$('#photos').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const d = b.dataset;
+  if (d.px != null) imgs.splice(Number(d.px), 1);
+  else if (d.pl != null) { const i = Number(d.pl); [imgs[i - 1], imgs[i]] = [imgs[i], imgs[i - 1]]; }
+  else if (d.pr != null) { const i = Number(d.pr); [imgs[i + 1], imgs[i]] = [imgs[i], imgs[i + 1]]; }
+  markDirty(); renderPhotos();
+});
+$('#addUrl').onclick = () => {
+  const v = prompt('사진 주소를 붙여넣어 주세요 (여러 개면 줄바꿈이나 띄어쓰기로 구분)');
+  if (!v) return;
+  const urls = v.split(/\s+/).map(s => s.trim()).filter(s => /^https?:\/\//.test(s));
+  if (!urls.length) return toast('https://로 시작하는 주소를 넣어 주세요', true);
+  imgs.push(...urls); markDirty(); renderPhotos();
+};
+$('#pickPhoto').onclick = () => $('#file').click();
+$('#file').onchange = async (e) => {
+  const files = [...e.target.files]; e.target.value = '';
+  uploading += files.length; renderPhotos();
+  for (const f of files) {
+    try {
+      const { b64, type } = await shrink(f);
+      const j = await api('upload', { data: b64, type });
+      imgs.push(j.url); markDirty();
+    } catch (err) { toast('사진 올리기 실패: ' + err.message, true); }
+    uploading--; renderPhotos();
+  }
+};
+
+// 폰 사진을 1400px, 약 700KB 이하로 줄여요
+async function shrink(file) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => no(new Error('이미지를 열 수 없어요')); i.src = url; });
+    let max = 1400, q = 0.85, out;
+    for (let n = 0; n < 6; n++) {
+      const r = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.naturalWidth * r); c.height = Math.round(img.naturalHeight * r);
+      const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
+      out = c.toDataURL('image/jpeg', q).split(',')[1];
+      if (out.length < 950000) break;
+      q -= 0.1; if (n >= 2) max = Math.round(max * 0.8);
+    }
+    return { b64: out, type: 'image/jpeg' };
+  } finally { URL.revokeObjectURL(url); }
+}
+
+function readForm() {
+  return {
+    id: cur.id, name: $('#fName').value.trim(), price: $('#fPrice').value.trim(),
+    uso: checked('uso'), mat: checked('mat'), level: (document.querySelector('input[name=lv]:checked') || {}).value || '',
+    isNew: $('#fNew').checked, custom: $('#fCustom').checked, hidden: $('#fHidden').checked,
+    imgs: [...imgs], note: $('#fNote').value.trim(), emoji: $('#fEmoji').value.trim(),
+  };
+}
+$('#pSave').onclick = async () => {
+  if (uploading) return toast('사진을 올리는 중이에요. 잠시만요', true);
+  const p = readForm();
+  if (!p.name) { $('#fName').focus(); return toast('상품명을 입력해 주세요', true); }
+  const btn = $('#pSave'); btn.disabled = true; btn.textContent = '저장 중…';
+  try {
+    const j = await api('saveProduct', { product: p });
+    S.products = j.products; renderProducts();
+    closeSheet('#pSheet', true); toast(p.id ? '저장했어요' : '새 상품을 맨 위에 추가했어요');
+  } catch (e) { toast(e.message, true); }
+  btn.disabled = false; btn.textContent = '저장';
+};
+$('#pDel').onclick = async () => {
+  if (!confirm(`'${cur.name}' 상품을 삭제할까요? 되돌릴 수 없어요.\n(잠깐 내리기만 하려면 '숨기기'를 켜세요)`)) return;
+  try { S.products = (await api('deleteProduct', { id: cur.id })).products; renderProducts(); closeSheet('#pSheet', true); toast('삭제했어요'); }
+  catch (e) { toast(e.message, true); }
+};
+
+// ---------- 파트너 ----------
+function renderPartners() {
+  const all = S.partners;
+  $('#ptCount').textContent = `파트너 ${all.length}곳 · 화살표로 순서 변경`;
+  $('#ptList').innerHTML = all.length ? all.map((p, i) => `<div class="row${p.hidden ? ' is-hidden' : ''}">
+      <div class="thumb">${esc(p.icon || '✦')}</div>
+      <button class="row-main" data-pedit="${esc(p.id)}">
+        <div class="row-name">${esc(p.name)}</div>
+        <div class="row-sub">${esc(p.tagline || '')}</div>
+        <div class="pills">${p.badge ? `<span class="pill" style="background:${grad(p.color)};color:#fff">${esc(p.badge)}</span>` : ''}${p.hidden ? '<span class="pill pill-hidden">숨김</span>' : ''}</div>
+      </button>
+      <div class="move">
+        <button data-pup="${i}" ${i === 0 ? 'disabled' : ''} aria-label="위로">▲</button>
+        <button data-pdown="${i}" ${i === all.length - 1 ? 'disabled' : ''} aria-label="아래로">▼</button>
+      </div></div>`).join('') : '<div class="empty">파트너가 없어요</div>';
+}
+$('#ptList').addEventListener('click', async e => {
+  const ed = e.target.closest('[data-pedit]');
+  if (ed) return openPartner(S.partners.find(p => p.id === ed.dataset.pedit));
+  const up = e.target.closest('[data-pup]'), down = e.target.closest('[data-pdown]');
+  if (!up && !down) return;
+  const i = Number((up || down).dataset[up ? 'pup' : 'pdown']), j = up ? i - 1 : i + 1;
+  const arr = [...S.partners]; [arr[i], arr[j]] = [arr[j], arr[i]];
+  S.partners = arr; renderPartners();
+  try { S.partners = (await api('reorderPartners', { ids: arr.map(p => p.id) })).partners; } catch (err) { toast(err.message, true); }
+});
+
+let curP = null;
+$('#ptSheet').addEventListener('input', markDirty);
+$('#ptSheet').addEventListener('change', markDirty);
+const colorPicker = (name, val) => Object.keys(COLORS).map(c => `<label><input type="radio" name="${name}" value="${c}" ${c === val ? 'checked' : ''}><span style="background:${grad(c)}"></span></label>`).join('');
+
+function btnBox(b, i) {
+  return `<div class="pbtn" data-bi="${i}">
+    <div class="pbtn-head"><span>버튼 ${i + 1}</span><button type="button" class="btn btn-sm btn-danger" data-bdel="${i}">삭제</button></div>
+    <input type="text" class="b-label" maxlength="80" placeholder="버튼 글자 (예: 💬 카카오채널로 구매 문의 →)" value="${esc(b.label)}">
+    <input type="url" class="b-url" maxlength="600" placeholder="https://..." value="${esc(b.url)}">
+    <div class="colors">${colorPicker('bc' + i, b.color || 'pink')}</div>
+  </div>`;
+}
+function readBtns() {
+  return [...document.querySelectorAll('#gBtns .pbtn')].map((el, i) => ({
+    label: el.querySelector('.b-label').value.trim(), url: el.querySelector('.b-url').value.trim(),
+    color: (el.querySelector(`input[name=bc${i}]:checked`) || {}).value || 'pink',
+  }));
+}
+function drawBtns(list) {
+  $('#gBtns').innerHTML = list.map(btnBox).join('');
+  $('#gAddBtn').classList.toggle('hidden', list.length >= 3);
+}
+$('#gAddBtn').onclick = () => { const l = readBtns(); l.push({ label: '💬 카카오채널로 구매 문의 →', url: 'https://pf.kakao.com/_vwxcxhX', color: 'pink' }); drawBtns(l); markDirty(); };
+$('#gBtns').addEventListener('click', e => {
+  const d = e.target.closest('[data-bdel]'); if (!d) return;
+  const l = readBtns(); l.splice(Number(d.dataset.bdel), 1); drawBtns(l); markDirty();
+});
+
+function openPartner(p) {
+  curP = p ? JSON.parse(JSON.stringify(p)) : { id: '', icon: '✦', name: '', tagline: '', badge: '', color: 'pink', desc: '', features: [], buttons: [], note: '', hidden: false };
+  $('#ptSheetTitle').textContent = curP.id ? '파트너 편집' : '새 파트너';
+  $('#gIcon').value = curP.icon; $('#gName').value = curP.name; $('#gTag').value = curP.tagline;
+  $('#gBadge').value = curP.badge; $('#gColor').innerHTML = colorPicker('gcol', curP.color || 'pink');
+  $('#gDesc').value = curP.desc; $('#gFeat').value = (curP.features || []).join('\n');
+  drawBtns(curP.buttons || []);
+  $('#gNote').value = curP.note; $('#gHidden').checked = !!curP.hidden;
+  $('#ptDel').classList.toggle('hidden', !curP.id);
+  dirty = false;
+  $('#ptSheet').classList.remove('hidden'); $('#ptSheet').scrollTop = 0; document.body.style.overflow = 'hidden';
+}
+$('#addPartner').onclick = () => openPartner(null);
+$('#ptSave').onclick = async () => {
+  const p = {
+    id: curP.id, icon: $('#gIcon').value.trim(), name: $('#gName').value.trim(), tagline: $('#gTag').value.trim(),
+    badge: $('#gBadge').value.trim(), color: (document.querySelector('input[name=gcol]:checked') || {}).value || 'pink',
+    desc: $('#gDesc').value.trim(), features: $('#gFeat').value.split('\n').map(s => s.trim()).filter(Boolean),
+    buttons: readBtns().filter(b => b.label && b.url), note: $('#gNote').value.trim(), hidden: $('#gHidden').checked,
+  };
+  if (!p.name) return toast('이름을 입력해 주세요', true);
+  try { S.partners = (await api('savePartner', { partner: p })).partners; renderPartners(); closeSheet('#ptSheet', true); toast('저장했어요'); }
+  catch (e) { toast(e.message, true); }
+};
+$('#ptDel').onclick = async () => {
+  if (!confirm(`'${curP.name}' 파트너를 삭제할까요?`)) return;
+  try { S.partners = (await api('deletePartner', { id: curP.id })).partners; renderPartners(); closeSheet('#ptSheet', true); toast('삭제했어요'); }
+  catch (e) { toast(e.message, true); }
+};
+
+// ---------- 설정 ----------
+function renderSettings() {
+  const s = S.settings;
+  $('#sCal').value = s.calendarUrl || ''; $('#sCalLabel').value = s.calendarLabel || '';
+  $('#sUso').value = (s.usoList || []).join('\n'); $('#sMat').value = (s.matList || []).join('\n');
+  $('#sPw').value = s.password || '';
+}
+async function saveSettings(part, msg) {
+  try { S.settings = (await api('saveSettings', { settings: part })).settings; renderSettings(); toast(msg || '저장했어요'); }
+  catch (e) { toast(e.message, true); }
+}
+const lines = (id) => $(id).value.split('\n').map(s => s.trim()).filter(Boolean);
+$('#saveCal').onclick = () => saveSettings({ calendarUrl: $('#sCal').value.trim(), calendarLabel: $('#sCalLabel').value.trim() });
+$('#saveLists').onclick = () => saveSettings({ usoList: lines('#sUso'), matList: lines('#sMat') });
+$('#savePw').onclick = () => {
+  const pw = $('#sPw').value.trim();
+  if (pw === S.settings.password) return toast('지금 비밀번호와 같아요');
+  if (!confirm(`카탈로그 비밀번호를 '${pw}'(으)로 바꿀까요?\n카카오 채널 안내 문구도 같이 바꿔 주세요.`)) return;
+  saveSettings({ password: pw }, '비밀번호를 바꿨어요');
+};
+$('#savePin').onclick = async () => {
+  const np = $('#sPin').value.trim();
+  if (np.length < 4) return toast('4자리 이상 입력해 주세요', true);
+  try { await api('changePin', { newPin: np }); PIN = np; store.set('dcat_pin', np); $('#sPin').value = ''; toast('PIN을 바꿨어요'); }
+  catch (e) { toast(e.message, true); }
+};
+
+window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+if (PIN) login(PIN); else $('#pin').focus();
+</script>
+</body>
+</html>

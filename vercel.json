@@ -1,8 +1,17 @@
 {
+  "functions": {
+    "api/index.js": { "includeFiles": "templates/**" }
+  },
   "rewrites": [
-    { "source": "/api/auth", "destination": "/api/auth" },
-    { "source": "/auth", "destination": "/auth.html" },
     { "source": "/", "destination": "/api/index" },
-    { "source": "/((?!api|auth|images|favicon).*)", "destination": "/api/index" }
+    { "source": "/index.html", "destination": "/api/index" },
+    { "source": "/catalog", "destination": "/api/index" },
+    { "source": "/catalog.html", "destination": "/api/index" },
+    { "source": "/auth", "destination": "/api/index" },
+    { "source": "/auth.html", "destination": "/api/index" },
+    { "source": "/admin", "destination": "/admin.html" }
+  ],
+  "headers": [
+    { "source": "/admin(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }] }
   ]
 }
